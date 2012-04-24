@@ -1,0 +1,42 @@
+Developed with web2py.
+
+Document Management System LOL :) for home use with sane compatible
+flatbed scanners...
+
+There is no hierarchie among files just tags.
+
+The application make use of crud.archive.
+
+There is no document checkout or checkin.
+
+There is only basic right management (just login and the user_1 can
+add and delete users).
+
+There is now only little set of scanner parameters to be set from a
+fixed set of values :(
+
+It is basically written based on the needs of mine.
+
+The document scanned with scanimage converted to jpeg (Image modul) or
+the jpeg's to pdf (convert program) if multiple pages are scanned.
+
+Need to edit db.py
+
+    db = DAL('...')
+
+If you install the app. you need after register and login click to
+"Check rights". It makes a dms group with access to database tables.
+The users have to be a member of dms group to use the app. user_1
+to...
+
+Than click the "Config" to specify scanimage and convert program's
+path.
+
+Happy document management!
+
+
+* There are known issues with the templating but I have no time to
+  fix it.
+* There could be a facelift too :)
+* I would like to apply any fix and enchancement pull request :)
+
