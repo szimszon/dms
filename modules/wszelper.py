@@ -76,6 +76,7 @@ class WSzelper( object ):
     {'messages': [['egy\\n'], ['ketto\\n'], [], ['harom\\n']], 'errorcodes': [0, 0, 0, 0], 'returncode': True, 'errormessages': [None, None, None, None]}
     """
     import subprocess
+    import platform
     returncode=True
     errorcodes=[]
     messages=[]
@@ -84,11 +85,19 @@ class WSzelper( object ):
         command=[command]
     procs=[]
     for com in command:
-      procs.append(subprocess.Popen( com,
+      if platform.system() != 'Windows':
+        procs.append(subprocess.Popen( com,
                                  stdout = subprocess.PIPE,
                                  stderr = subprocess.PIPE,
                                  universal_newlines = True,
                                  close_fds = True ))
+      else:
+        procs.append(subprocess.Popen( com,
+                                 stdout = subprocess.PIPE,
+                                 stderr = subprocess.PIPE,
+                                 universal_newlines = True
+                                 ))
+
     for p in procs:
       p.wait()
       errorcodes.append(p.returncode)
