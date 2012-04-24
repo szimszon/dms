@@ -1,0 +1,52 @@
+{{extend 'layout.html'}}
+<script type="text/javascript">
+jQuery(function(){
+	jQuery('#no_table_tag').autocomplete("{{=URL(r=request,c='ac',f='tags')}}");
+	jQuery('#no_table_title').autocomplete("{{=URL(r=request,c='ac',f='title')}}");
+	jQuery('#datatable').dataTable(
+			{
+				"oLanguage": { 
+					"sProcessing":   "Feldolgozás...",
+					"sLengthMenu":   "_MENU_ találat oldalanként",
+					"sZeroRecords":  "Nincs a keresésnek megfelelő találat",
+					"sInfo":         "Találatok: _START_ - _END_ Összesen: _TOTAL_",
+					"sInfoEmpty":    "Nulla találat",
+					"sInfoFiltered": "(_MAX_ összes rekord közül szűrve)",
+					"sInfoPostFix":  "",
+					"sSearch":       "Keresés:",
+					"sUrl":          "",
+					"oPaginate": {
+						"sFirst":    "Első",
+						"sPrevious": "Előző",
+						"sNext":     "Következő",
+						"sLast":     "Utolsó"
+					}
+				}
+			}
+			);
+		
+})
+</script>
+
+<center><h2>{{=T('Searching file')}}</h2></center>
+
+{{if form:
+  =form
+  pass}}
+
+{{if dlist:}}
+<table id="datatable" style="width: 100%">	<thead>		<tr>			<th>{{=db.documents.title.label}}</th>			<th>{{=db.documents.comments.label}}</th>
+			<th>{{=db.documents.file.label}}</th>
+			<th>{{=db.documents.expire_on.label}}</th>
+			<th>{{=db.documents.modified_by.label}}</th>
+			<th>{{=db.documents.modified_on.label}}</th>
+		</tr>	</thead>
+	<tbody>
+		{{for doc in dlist:}}
+		<tr>			<td>{{=A(doc.documents.title,_href=URL(r=request,f='store',args=doc.documents.id))}}</td>			<td>{{=doc.documents.comments}}</td>			<td>{{=A(db.documents.file.label,_href=URL(r=request,f='download',args=doc.documents.file))}}</td>
+			<td>{{=doc.documents.expire_on}}</td>
+			<td>{{="%s %s"%(doc.auth_user.last_name,doc.auth_user.first_name)}}</td>			<td>{{=doc.documents.modified_on}}</td>		</tr>
+		{{pass}}
+	</tbody></table>
+{{pass}}
+  

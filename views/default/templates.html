@@ -1,0 +1,77 @@
+{{extend 'layout.html'}}
+<script type="text/javascript">
+jQuery(function(){
+	jQuery('#templates_tag').autocomplete("{{=URL(r=request,c='ac',f='tags')}}");
+	jQuery('#datatable').dataTable(
+			{
+				"oLanguage": { 
+					"sProcessing":   "Feldolgozás...",
+					"sLengthMenu":   "_MENU_ találat oldalanként",
+					"sZeroRecords":  "Nincs a keresésnek megfelelő találat",
+					"sInfo":         "Találatok: _START_ - _END_ Összesen: _TOTAL_",
+					"sInfoEmpty":    "Nulla találat",
+					"sInfoFiltered": "(_MAX_ összes rekord közül szűrve)",
+					"sInfoPostFix":  "",
+					"sSearch":       "Keresés:",
+					"sUrl":          "",
+					"oPaginate": {
+						"sFirst":    "Első",
+						"sPrevious": "Előző",
+						"sNext":     "Következő",
+						"sLast":     "Utolsó"
+					}
+				}
+			}
+			);
+		
+})
+</script>
+{{import datetime}}
+<center><h2>{{=T('Document form templates')}}</h2></center>
+
+
+{{if tlist:}}
+<h3>{{=T('Template list')}}</h3>
+<table id="datatable" style="width: 100%">
+	<thead>
+		<tr>
+			<th>{{=db.templates.dgroup.label}}</th>
+			<th>{{=db.templates.name.label}}</th>
+			<th>{{=db.templates.title.label}}</th>
+			<th>{{=db.templates.body.label}}</th>
+			<th>{{=db.templates.comments.label}}</th>
+			<th>{{=db.templates.active.label}}</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{for doc in tlist:}}
+		<tr>
+			<td>{{=doc.dgroup}}</td>
+			{{if request.args(0)!=str(doc.id):}} 
+				<td>{{=A(doc.name,_href=URL(r=request,f='templates',args=doc.id))}}</td>
+			{{else:}}
+				<td>{{=doc.name}}</td>
+			{{pass}}
+			<td>{{=doc.title}}</td>
+			<td>{{=doc.body}}</td>
+			<td>{{=doc.comments}}</td>
+			<td>{{=doc.active}}</td>
+		</tr>
+		{{pass}}
+	</tbody>
+</table>
+{{pass}}
+
+<div id="substitutions" style="border:1px solid">
+<h3><center>{{=T('Substitutions')}}</center></h3>
+<table>	<tr><td>{{=T('Example:')}} <tt>{$date+10}</tt> == {{=(request.now+datetime.timedelta(days=10)).date().strftime(str(T('%Y-%m-%d')))}}</td><td>{{=T('{$user} - user')}}</td></tr>
+	<tr><td>{{=T('{$date[+-num]} - date')}}</td><td>{{=T('{$time[+-num]} - time')}}</td></tr>	<tr><td>{{=T('{$YYYY[+-num]} - year')}}</td><td>{{=T('{$mm[+-num]} - month')}}</td></tr>	<tr><td>{{=T('{$dd[+-num]} - day')}}</td><td>{{=T('{$HH[+-num]} - hour')}}</td></tr>	<tr><td>{{=T('{$MM[+-num]} - minute')}}</td><td>{{=T('{$SS[+-num]} - second')}}</td></tr></table></div>
+<div id="formtemplate" style="border:1px solid">
+<h3><center>{{=T('Form template')}}</center></h3>
+
+  
+{{if form:
+  =form
+pass}}
+
+</div>  

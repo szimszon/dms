@@ -1,0 +1,100 @@
+{{extend 'layout.html'}}
+<script type="text/javascript">
+jQuery(function(){
+	jQuery('#documents_tag').autocomplete("{{=URL(r=request,c='ac',f='tags')}}");
+	jQuery('#documents_title').autocomplete("{{=URL(r=request,c='ac',f='title')}}");
+	jQuery('.datatable').dataTable(
+			{
+				"oLanguage": { 
+					"sProcessing":   "Feldolgozás...",
+					"sLengthMenu":   "_MENU_ találat oldalanként",
+					"sZeroRecords":  "Nincs a keresésnek megfelelő találat",
+					"sInfo":         "Találatok: _START_ - _END_ Összesen: _TOTAL_",
+					"sInfoEmpty":    "Nulla találat",
+					"sInfoFiltered": "(_MAX_ összes rekord közül szűrve)",
+					"sInfoPostFix":  "",
+					"sSearch":       "Keresés:",
+					"sUrl":          "",
+					"oPaginate": {
+						"sFirst":    "Első",
+						"sPrevious": "Előző",
+						"sNext":     "Következő",
+						"sLast":     "Utolsó"
+					}
+				}
+			}
+			);
+
+	jQuery('#no_table_template').change(
+			function(){
+					if (this.value != '') {
+						jQuery.get('{{=URL(r=request,c='ac',f='templates.json')}}/'+this.value,
+								function(data) {
+									if (jQuery('#documents_title').val()=='') {
+										jQuery('#documents_title').val(data['title']);
+									}	
+									if (jQuery('#documents_tag').val()=='') {
+										jQuery('#documents_tag').val(data['tag']);
+									}	
+									if (jQuery('#documents_body').val()=='') {
+										jQuery('#documents_body').val(data['body']);
+									}	
+									if (jQuery('#documents_comments').val()=='') {
+										jQuery('#documents_comments').val(data['comments']);
+									}	
+									if (jQuery('#documents_expire_on').val()=='') {
+										jQuery('#documents_expire_on').val(data['expire_on']);
+									}	
+							}
+						)
+					}
+				}
+			)
+})
+</script>
+
+<center><h2>{{=T('Storing file')}}</h2></center>
+{{if request.args(0):
+=A(T('New action'),_href=URL(r=request,f='action',args=request.args))
+pass}}
+
+{{if actionlist:}}
+<table class="datatable" style="width:100%">	<thead>		<tr>			<th>{{=db.action.name.label}}</th>
+			<th>{{=db.action.atype.label}}</th>
+			<th>{{=db.action.email.label}}</th>
+			<th>{{=db.action.adate.label}}</th>		</tr>	</thead>
+	<tbody>
+		{{for act in actionlist:}}		<tr>			<td>{{=A(act.action.name,_href=URL(r=request,f='action',args=[request.args(0),act.action.id]))}}</td>
+			<td>{{=act.action.atype}}</td>
+			<td>{{=act.action.email}}</td>
+			<td>{{=act.action.adate if act.action.adate else act.documents.expire_on}}</td>		</tr>
+		{{pass}}	</tbody></table>
+{{pass}}
+{{if session.scan and request.vars.source=='scanner':}}
+  {{include "default/scanpage.html"}}
+{{else:}}
+  <div style='border:1px solid'><center><h3>{{=A(T('Scan pages'),_href=URL(r=request,f='scanner'))}}</h3></center>
+{{pass}}
+
+{{if request.args(0):
+	if request.vars.source!='scanner':
+		=P(A(T('Update file from scanned pages'),_href=URL(r=request,f='store',args=request.args,vars=dict(source='scanner'))))
+	else:
+		=P(A(T('Upload new file'),_href=URL(r=request,f='store',args=request.args,vars=dict(source='upload'))))
+	pass
+pass}}
+
+{{if templateform:}}
+<table>
+	<tr>
+		{{=templateform.custom.begin}}
+		<td>{{=T( 'Document template' )}}: </td>
+		<td>{{=templateform.custom.widget.template}}</td>
+		{{=templateform.custom.end}}
+	</tr>
+</table>
+{{pass}}
+
+{{if form:
+  =form
+  pass}}
