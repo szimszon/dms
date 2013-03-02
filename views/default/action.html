@@ -1,0 +1,54 @@
+{{extend 'layout.html'}}
+<script type="text/javascript">
+jQuery(function(){
+	jQuery('#no_table_tag').autocomplete("{{=URL(r=request,c='ac',f='tags')}}");
+	jQuery('.datatable').dataTable(
+			{
+				"oLanguage": { 
+					"sProcessing":   "Feldolgozás...",
+					"sLengthMenu":   "_MENU_ találat oldalanként",
+					"sZeroRecords":  "Nincs a keresésnek megfelelő találat",
+					"sInfo":         "Találatok: _START_ - _END_ Összesen: _TOTAL_",
+					"sInfoEmpty":    "Nulla találat",
+					"sInfoFiltered": "(_MAX_ összes rekord közül szűrve)",
+					"sInfoPostFix":  "",
+					"sSearch":       "Keresés:",
+					"sUrl":          "",
+					"oPaginate": {
+						"sFirst":    "Első",
+						"sPrevious": "Előző",
+						"sNext":     "Következő",
+						"sLast":     "Utolsó"
+					}
+				}
+			}
+			);
+})
+</script>
+{{if request.args(0)=='0':
+	actionname=T('Default')
+else:
+	actionname=db(db.documents.id==request.args(0)).select(db.documents.title).first().title
+pass}}
+<center><h2>{{=T('Action')}}: {{=actionname}}</h2></center>
+{{if actionlist:}}
+<table class="datatable" style='width:100%'>	<thead>		<tr>			<th>{{=db.action.name.label}}</th>			<th>{{=db.action.atype.label}}</th>
+			<th>{{=db.action.email.label}}</th>
+			<th>{{=db.action.adate.label}}</th>
+			<th>{{=db.action.done.label}}</th>
+		</tr>	</thead>
+	<tbody>
+	{{for act in actionlist:}}		<tr>			<td>{{=A(act.name,_href=URL(r=request,f='action',args=[request.args(0),act.id]))}}</td>			<td>{{=T(act.atype)}}</td>
+			<td>{{=act.email}}</td>
+			<td>{{=T(str(act.adate))}}</td>
+			<td>{{=T(str(act.done))}}</td>
+		</tr>	{{pass}}
+	</tbody>
+</table>
+<br/>
+{{pass}}
+{{=A(T('New action'),_href=URL(r=request,f='action',args=request.args(0)))}}
+
+{{if form:
+  =form
+  pass}}
