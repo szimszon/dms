@@ -4,50 +4,28 @@ $(function(){
 	$('#scanlink').click(
 			function(){
 					$('#scanning').remove()
-					$('#scanlink').after('<div id=\'scanning\'>{{=T('Scanning... it could take a while.')}}</div>')
+					$('#scanner').html('<div id=\'scanning\'>{{=T('Scanning... it could take a while.')}}</div>')
 					$('#scanning').hide().fadeIn('slow');
+					setInterval(function(){
+					    ajax('{{=URL("ac","progress")}}',[],'scanning')
+                    },1000);
 				}
 		);
+	$('#scanlink').click(
+            function(){
+                ajax('{{=URL("default","scanning")}}',[],':eval');
+            }
+        )
 });
 
 </script>
-<!--<script type="text/javascript">-->
-<!---->
-<!--// scanner progress.-->
-<!--$(function() {-->
-<!--    $('#scanlink').click(function(){ -->
-<!---->
-<!--        var freq = 2000; // freqency of update in ms-->
-<!--        var progress_url = '{{=URL(r=request,c='default',f='scanning')}}'; // ajax view serving progress info-->
-<!---->
-<!--        $('#scanning-progress').remove()-->
-<!--        var $progress = $('<div id="scanning-progress"></div>').insertAfter($('#scanlink')).append('<div class="progress-container"><span class="progress-info">scanning 0%</span><div class="progress-bar"></div></div>');-->
-<!--        $progress.find('.progress-bar').height('1em').width(0).css("background-color", "red");-->
-<!--        $('#scanlink').remove()-->
-<!--        // Update progress bar-->
-<!--        function update_progress_info() {-->
-<!--            $progress.show();-->
-<!--            $.get(progress_url, function(data){-->
-<!--                if (data) {-->
-<!--                    var width = $progress.find('.progress-container').width()-->
-<!--                    var progress_width = data;-->
-<!--                    $progress.find('.progress-bar').width(progress_width);-->
-<!--                    $progress.find('.progress-info').text('scanning complete: ' + data + '%');-->
-<!--                }-->
-<!--                window.setTimeout(update_progress_info, freq);-->
-<!--            });-->
-<!--        };-->
-<!--        window.setTimeout(update_progress_info, freq);-->
-<!--    });-->
-<!--});-->
-<!--</script>-->
 
 
 <center><h2>{{=T('Scanning')}}</h2></center>
 
 
 {{if msg:}}
-  <center>{{=msg}}</center>
+<div id="scanner">{{=msg}}</div>
 {{pass}}
 {{if session.scan:}}
 	{{include "default/scanpage.html"}}

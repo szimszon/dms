@@ -6,13 +6,13 @@
       <img src="{{=URL(r=request,c='static',f=sf['thumb'])}}"
      alt="{{=sf['name']}}" /></a></td>
          <td>
-     	<acronym title='Töröl'>{{=A(IMG(_src=URL(r=request,c='static',f='delete.png')),_href=URL(r=request,f='scanner',vars=dict(delete=x)))}}</acronym>
+     	<acronym title='Töröl'>{{=A(IMG(_src=URL(r=request,c='static',f='images/delete.png')),_href=URL(r=request,f='scanner',vars=dict(delete=x)))}}</acronym>
      	{{if db(db.config.id>0).select(limitby=(0,1))[0].ocr:}}
-         	<acronym title='{{=T('Recognize')}}'>{{=A(IMG(_src=URL(r=request,c='static',f='recognize.png')),_href=URL(r=request,f='recognize',args=x,vars=dict(do='recognize')))}}</acronym>
+         	<acronym title='{{=T('Recognize')}}'>{{=A(IMG(_src=URL(r=request,c='static',f='images/recognize.png')),_href=URL(r=request,f='recognize',args=x,vars=dict(do='recognize')))}}</acronym>
      	{{pass}}
      	{{if session.scan[x]['ocr']:}}
-         	<acronym title='{{=T('Edit recognized text')}}'>{{=A(IMG(_src=URL(r=request,c='static',f='edit.png')),_href=URL(r=request,f='recognize',args=x,vars=dict(do='edit')))}}</acronym>
-         	<acronym title='{{=T('Delete recognized text')}}'>{{=A(IMG(_src=URL(r=request,c='static',f='delete.png')),_href=URL(r=request,f='recognize',args=x,vars=dict(do='delete')))}}</acronym>
+         	<acronym title='{{=T('Edit recognized text')}}'>{{=A(IMG(_src=URL(r=request,c='static',f='images/edit.png')),_href=URL(r=request,f='recognize',args=x,vars=dict(do='edit')))}}</acronym>
+         	<acronym title='{{=T('Delete recognized text')}}'>{{=A(IMG(_src=URL(r=request,c='static',f='images/delete.png')),_href=URL(r=request,f='recognize',args=x,vars=dict(do='delete')))}}</acronym>
      	{{pass}}
      	</td>
        </tr>
