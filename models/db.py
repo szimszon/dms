@@ -12,10 +12,10 @@ if request.env.web2py_runtime_gae:						# if running on Google App Engine
 		# from google.appengine.api.memcache import Client
 		# session.connect(request, response, db = MEMDB(Client()))
 else:																				 # else use a normal relational database
-		if request.env.server_name == 'szimszon-Aspire-5742G':
+		if request.env.server_name == 'gimli':
 				db = DAL('sqlite://dms.sqlite')			 # if not, use SQLite or other DB
 		else:
-				db = DAL('mysql://dms:YReswjcki347@localhost/dms')
+				db = DAL('mysql://dms:YRecki347@localhost/dms')
 ## if no need for session
 # session.forget()
 
@@ -28,7 +28,7 @@ else:																				 # else use a normal relational database
 ## - crud actions
 ## (more options discussed in gluon/tools.py)
 #########################################################################
-
+session.connect(request, response, db, masterapp=None)
 from gluon.tools import *
 mail = Mail()																	# mailer
 auth = Auth(globals(), db)											# authentication/authorization
