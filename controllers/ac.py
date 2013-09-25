@@ -142,14 +142,14 @@ def tags():
         '''
             tagek kigyujtese, autocomplet
         '''
-        import simplejson
-        import re
-        re_x = re.compile('^(?P<eleje>.*),[ ]*(?P<vege>[^,]*)$')
         q = ""
         if request.vars:
                 q = request.vars.term
         if not q:
                 return q
+        import simplejson
+        import re
+        re_x = re.compile('^(?P<eleje>.*),[ ]*(?P<vege>[^,]*)$')
         m = re_x.match(q)
         if not m:
             vege = q
@@ -183,6 +183,7 @@ def title():
                 q = request.vars.term
         if not q:
                 return q
+        import simplejson
         # kikeressuk a sorokat, amik hasonlitanak a beirt kifejezeshez
         rows = db(db.documents.title.lower().like('%' + q.decode('utf-8').lower() + '%')).select()
 
@@ -190,4 +191,4 @@ def title():
         r = []
         for row in rows:
                 r.append(row.title)
-        return simplejson.sdump(r)
+        return simplejson.dumps(r)
