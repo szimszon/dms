@@ -1,8 +1,8 @@
 {{extend 'layout.html'}}
 <script type="text/javascript">
 jQuery(function(){
-	jQuery('#documents_tag').autocomplete("{{=URL(r=request,c='ac',f='tags')}}");
-	jQuery('#documents_title').autocomplete("{{=URL(r=request,c='ac',f='title')}}");
+	jQuery('#documents_tag').autocomplete({source:"{{=URL(r=request,c='ac',f='tags')}}"});
+	jQuery('#documents_title').autocomplete({source:"{{=URL(r=request,c='ac',f='title')}}"});
 	jQuery('.datatable').dataTable(
 			{
 				"oLanguage": { 

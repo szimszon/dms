@@ -66,7 +66,7 @@
     {{if stop<nrows:}}{{=A(T('next 100 rows'),_href=URL('select',args=request.args[0],vars=dict(start=start+100)),_class="btn")}}{{pass}}
     {{if rows:}}
        <div style="overflow: auto;" width="80%">
-       {{linkto=URL('update',args=request.args[0])}}
+       {{linkto = lambda f, t, r: URL('update', args=[request.args[0], r, f]) if f else "#"}}
        {{upload=URL('download',args=request.args[0])}}
        {{=SQLTABLE(rows,linkto,upload,orderby=True,_class='sortable')}}
        </div>
@@ -246,4 +246,23 @@
     <br />
     {{=IMG(_src=URL('appadmin', 'bg_graph_model'))}}
   {{pass}}
+{{pass}}
+
+{{if request.function == 'manage':}}
+<h2>{{=heading}}</h2>
+<ul class="nav nav-tabs">
+  {{for k, tablename in enumerate(tablenames):}}
+  <li{{=XML(' class="active"') if k == 0 else ''}}>
+    <a href="#table-{{=tablename}}" data-toggle="tab">{{=labels[k]}}</a>
+  </li>
+  {{pass}}
+</ul>
+
+<div class="tab-content">
+  {{for k, tablename in enumerate(tablenames):}}
+  <div class="tab-pane{{=XML(' active') if k == 0 else ''}}" id="table-{{=tablename}}">
+    {{=LOAD(f='manage.load', args=[request.args(0), k], ajax=True)}}
+  </div>
+  {{pass}}
+</div>
 {{pass}}

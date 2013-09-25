@@ -1,7 +1,7 @@
 {{extend 'layout.html'}}
 <script type="text/javascript">
 jQuery(function(){
-	jQuery('#templates_tag').autocomplete("{{=URL(r=request,c='ac',f='tags')}}");
+	jQuery('#templates_tag').autocomplete({source:"{{=URL(r=request,c='ac',f='tags')}}"});
 	jQuery('#datatable').dataTable(
 			{
 				"oLanguage": { 
