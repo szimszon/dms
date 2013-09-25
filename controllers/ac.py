@@ -147,7 +147,7 @@ def tags():
         re_x = re.compile('^(?P<eleje>.*),[ ]*(?P<vege>[^,]*)$')
         q = ""
         if request.vars:
-                q = request.vars.q
+                q = request.vars.term
         if not q:
                 return q
         m = re_x.match(q)
@@ -170,7 +170,7 @@ def tags():
                             r.append(s)
                         else:
                             r.append("%s,%s" % (eleje, s))
-        return simplejson.dump(r)
+        return simplejson.dumps(r)
 
 
 @auth.requires_login()
@@ -180,7 +180,7 @@ def title():
         '''
         q = ""
         if request.vars:
-                q = request.vars.q
+                q = request.vars.term
         if not q:
                 return q
         # kikeressuk a sorokat, amik hasonlitanak a beirt kifejezeshez
@@ -190,4 +190,4 @@ def title():
         r = []
         for row in rows:
                 r.append(row.title)
-        return simplejson.dump(r)
+        return simplejson.sdump(r)
