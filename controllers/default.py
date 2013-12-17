@@ -1,12 +1,12 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 #########################################################################
-## This is a samples controller
-## - index is the default action of any application
-## - user is required for authentication and authorization
-## - download is for downloading files uploaded in the db (does streaming)
-## - call exposes all registered services (none by default)
-#########################################################################    
+# # This is a samples controller
+# # - index is the default action of any application
+# # - user is required for authentication and authorization
+# # - download is for downloading files uploaded in the db (does streaming)
+# # - call exposes all registered services (none by default)
+#########################################################################
 
 def crondaily():
     if request.client != '127.0.0.1':
@@ -18,16 +18,17 @@ def doaction(form, atype):
     urlbase = db(db.config.id > 0).select(limitby=(0, 1)).first().urlbase
     if atype == 'cron':
         actionlist = db(((db.action.done != True) &
-                                            ((db.documents.id == db.action.documents_id) &
-                                                      ((db.action.adate == request.now) |
-                                                                 (
-                                                                    (db.documents.expire_on == request.now) &
-                                                                    (db.action.atype == 'expired')
-                                                                )
-                                                        )
-                                            )) | (
-                                                        ((db.action.atype == 'expired') & (db.action.documents_id == 0) &
-                                                        (db.documents.expire_on == request.now))
+                        ((db.documents.id == db.action.documents_id) &
+                        ((db.action.adate == request.now) |
+                          (
+                             (db.documents.expire_on == request.now) &
+                             (db.action.atype == 'expired')
+                          )
+                        )
+                        )) | (
+                             ((db.action.atype == 'expired') &
+                              (db.action.documents_id == 0) &
+                              (db.documents.expire_on == request.now))
                                                     )
                                                       ).select()
     elif atype == 'other':
@@ -336,7 +337,7 @@ def scanner():
             scanners = None
             form = None
             response.flash = T('No scanners were identified!')
-            #redirect(URL(r=request,f='index'))
+            # redirect(URL(r=request,f='index'))
     dev = []
     sname = []
     for s in r['messages'][0]:
@@ -464,10 +465,15 @@ def action():
 @auth.requires_login()
 def store():
         templateform = SQLFORM.factory(
-                                                                 Field('template', db.templates,
-                                                                             label=T('Document template'),
-                                                                             requires=IS_NULL_OR(IS_IN_DB(db, db.templates.id, '%(dgroup)s-> %(name)s', groupby=db.templates.dgroup | db.templates.name | db.templates.id))),
-                                                                 )
+                       Field('template', db.templates,
+                             label=T('Document template'),
+                             requires=IS_NULL_OR(
+                                        IS_IN_DB(
+                                        db,
+                                        db.templates.id,
+                                        '%(dgroup)s-> %(name)s',
+                                         groupby=db.templates.dgroup | db.templates.name | db.templates.id))),
+                                                 )
         actionlist = None
         if not request.args:
                 if request.vars.source == 'scanner':
@@ -480,30 +486,57 @@ def store():
                             if len(body) > 0:
                                 db.documents.body.default = body
                                 db.documents.body.update = body
-                form = crud.create(db.documents, onvalidation=storevalidate,
-                                                 onaccept=lambda form:(populatetags(form), doaction(form, 'new')))
+                form = crud.create(db.documents,
+                                   onvalidation=storevalidate,
+                                   onaccept=lambda form:(populatetags(form),
+                                                        doaction(form, 'new')))
+                document_url = None
+                document_type = None
         else:
                 if request.vars.source == 'scanner':
                         db.documents.file.writable = False
                         db.documents.file.readable = False
                 else:
                     actionlist = db((db.action.done != True) &
-                                                    (db.documents.id == db.action.documents_id) &
-                                                     (db.action.documents_id == request.args(0)) &
-                                                      ((db.action.adate >= request.now) | (
-                                                      (db.documents.expire_on >= request.now) &
-                                                      (db.action.adate == None)))
-                                                      ).select(
-                                                                                                                        orderby=db.action.adate)
-                form = crud.update(db.documents, request.args(0), deletable=False,
-                                                 onvalidation=storevalidate,
-                                                 onaccept=lambda form: (populatetags(form),
-                                                                                                     crud.archive(form),
-                                                                                                     doaction(form, 'modified')))
+                                (db.documents.id == db.action.documents_id) &
+                                 (db.action.documents_id == request.args(0)) &
+                                  ((db.action.adate >= request.now) | (
+                                  (db.documents.expire_on >= request.now) &
+                                  (db.action.adate == None)))
+                                  ).select(
+                                           orderby=db.action.adate)
+                form = crud.update(db.documents,
+                                   request.args(0),
+                                   deletable=False,
+                                   onvalidation=storevalidate,
+                                   onaccept=lambda form: (populatetags(form),
+                                                          crud.archive(form),
+                                                   doaction(form, 'modified')))
+                document_row = db.documents(request.args(0))
+                filename = document_row.file
+                import os
+                file_extension = os.path.splitext(filename)[1].lower()[1:]
+                if file_extension in ['pdf', 'odt', 'odp', 'ods', 'fodt']:
+                    document_url = '%s#%s' % (
+                                    str(URL('static', 'Viewer.js/index.html')),
+                                    str(URL('default', 'download',
+                                            args=filename)))
+                    document_type = 'viewer.js'
+                elif file_extension in ['jpg', 'png', 'gif']:
+                    document_url = URL('default', 'download',
+                                            args=filename)
+                    document_type = 'image'
+                else:
+                    document_url = None
+                    document_type = None
         if request.vars.source == 'scanner':
                 db.documents.file.writable = True
                 db.documents.file.readable = True
-        return dict(form=form, templateform=templateform , actionlist=actionlist)
+        return dict(form=form, templateform=templateform ,
+                    actionlist=actionlist,
+                    document_url=document_url,
+                    document_type=document_type)
+
 
 @auth.requires_login()
 def mailto():

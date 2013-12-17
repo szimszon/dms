@@ -52,10 +52,21 @@ jQuery(function(){
 			)
 })
 </script>
-
+<div class='span11 center'>
 <center><h2>{{=T('Storing file')}}</h2></center>
+</div>
+{{if document_type:}}
+<div class='span11 center'>
+    {{if document_type=='viewer.js':}}
+        <iframe id="viewer" src ="{{=document_url}}" width='95%' height='800px' allowfullscreen webkitallowfullscreen></iframe>
+    {{elif document_type=='image':}}
+    <image width='90%' src="{{=document_url}}"></image>
+    {{pass}}
+</div> 
+{{pass}}
+<div class='span11 center alert alert-success'>
 {{if request.args(0):
-=A(T('New action'),_href=URL(r=request,f='action',args=request.args))
+=A(T('New action'),_href=URL(r=request,f='action',args=request.args),_class='btn')
 pass}}
 
 {{if actionlist:}}
@@ -70,21 +81,30 @@ pass}}
 			<td>{{=act.action.adate if act.action.adate else act.documents.expire_on}}</td>		</tr>
 		{{pass}}	</tbody></table>
 {{pass}}
+</div>
+<div class='span11 center alert alert-success'>
 {{if session.scan and request.vars.source=='scanner':}}
+<div class='span10'>
   {{include "default/scanpage.html"}}
+</div>
 {{else:}}
-  <div style='border:1px solid'><center><h3>{{=A(T('Scan pages'),_href=URL(r=request,f='scanner'))}}</h3></center>
+  <div class='span5 center'>
+     {{=A(T('Scan pages'),_href=URL(r=request,f='scanner'),_class='btn')}}
+  </div>
 {{pass}}
 
-{{if request.args(0):
-	if request.vars.source!='scanner':
-		=P(A(T('Update file from scanned pages'),_href=URL(r=request,f='store',args=request.args,vars=dict(source='scanner'))))
+{{if request.args(0):}}
+	<div class='span5 center'>
+{{if request.vars.source!='scanner':
+		=A(T('Update file from scanned pages'),_href=URL(r=request,f='store',args=request.args,vars=dict(source='scanner')),_class='btn')
 	else:
-		=P(A(T('Upload new file'),_href=URL(r=request,f='store',args=request.args,vars=dict(source='upload'))))
-	pass
-pass}}
-
+		=A(T('Upload new file'),_href=URL(r=request,f='store',args=request.args,vars=dict(source='upload')),_class='btn')
+	pass}}
+	</div>
+{{pass}}
+</div>
 {{if templateform:}}
+<div class='span11 alert alert-warning'>
 <table>
 	<tr>
 		{{=templateform.custom.begin}}
@@ -93,8 +113,10 @@ pass}}
 		{{=templateform.custom.end}}
 	</tr>
 </table>
+</div>
 {{pass}}
-
-{{if form:
-  =form
-  pass}}
+{{if form:}}
+<div class='span11 alert alert-info'>
+{{=form}}
+</div>
+{{pass}}
