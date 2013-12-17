@@ -3,6 +3,7 @@ encoding//controllers/appadmin.py=utf-8
 encoding//controllers/default.py=utf-8
 encoding//languages/hu.py=utf8
 encoding//models/1_bree.py=utf-8
+encoding//models/1_production.py=utf-8
 encoding//models/db.py=utf-8
 encoding//models/menu.py=utf-8
 encoding//modules/wszelper.py=utf-8
