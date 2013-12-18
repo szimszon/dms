@@ -39,8 +39,8 @@ def progress():
     ret = '<div class="progress progress-striped active">' + \
         '<div class="bar" style="width: %s;"></div>' % szazalek + \
         '%s</div>' % szazalek
-    if len(hiba) > 0:
-        ret += '(%s)' % hiba
+    # if len(hiba) > 0:
+    #    ret += '(%s)' % hiba
     return ret
 
 
