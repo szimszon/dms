@@ -10,6 +10,7 @@ def progress():
     import re
     re_szazalek = re.compile("(?P<szazalek>[\d\.]+%)$")
     szazalek = '0%'
+    hiba = ''
     if not session._scan:
         progressdir = str(os.path.join(request.folder, 'static', '*.err'))
         fajlok = list(glob.glob(progressdir))
@@ -34,9 +35,12 @@ def progress():
         except Exception, e:
             session._scan = None
             szazalek = '0%'
+            hiba = e
     ret = '<div class="progress progress-striped active">' + \
         '<div class="bar" style="width: %s;"></div>' % szazalek + \
         '%s</div>' % szazalek
+    if len(hiba) > 0:
+        ret += '(%s)' % hiba
     return ret
 
 
