@@ -35,7 +35,7 @@ def progress():
         except Exception, e:
             session._scan = None
             szazalek = '0%'
-            hiba = e
+            hiba = str(e)
     ret = '<div class="progress progress-striped active">' + \
         '<div class="bar" style="width: %s;"></div>' % szazalek + \
         '%s</div>' % szazalek
